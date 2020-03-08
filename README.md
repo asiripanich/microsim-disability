@@ -30,7 +30,7 @@ a <- Agent$new(.data = population, id_col = "id")
 
 # add Agent to World
 w$add(a, name = "Agent")
-#> [11:54:25] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
+#> [12:01:10] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
 
 # convert the transition matrix to a format that dymiumCore can understand
 # see https://core.dymium.org/articles/dymium-intro.html#transition
@@ -51,32 +51,32 @@ event_disability <- function(w, model) {
   
   Agt <- w$get("Agent")
   
-  eligible_agent_ids <- Agt$get_data()[age > 50, get(Agt$get_id_col())]
+  # select only agents that are older than 50 years old
+  eligible_agent_ids <- Agt$get_data()[age > 50 & state != "death",
+                                       get(Agt$get_id_col())]
   
-  TransitionDisability <- TransitionClassification$new(x = Agt, 
-                                                       model = model, 
-                                                       targeted_agents = eligible_agent_ids)
+  TransitionDisability <- 
+    TransitionClassification$new(
+      x = Agt, 
+      model = model, 
+      targeted_agents = eligible_agent_ids
+    )
   
+  # use the simulated result to update the 'state' attribute of the selected agents
   TransitionDisability$update_agents(attr = "state")
-  
-  dead_agent_ids <- Agt$get_data()[state == "death", get(Agt$get_id_col())]
-  
-  if (length(dead_agent_ids) != 0) {
-    message("Removing ", length(dead_agent_ids), " agents in 'death' state.")
-    Agt$remove(ids = dead_agent_ids)
-  }
-  
-  Agt$log(desc = "disability:state", value = xtabs(~ state, data = Agt$get_data()))
+
+  Agt$log(desc = "disability:state",
+          value = xtabs(~ state, data = Agt$get_data()))
   
   return(w)
 }
 
-
 event_age <- function(w) {
   Agt <- w$get("Agent")
   
-  # update age of agents, with max of 114.
-  Agt$get_data(copy = FALSE)[, age := ifelse(age + 1L > 114L, 114L, age + 1L)]
+  # update age of alive agents, with max of 114.
+  Agt$get_data(copy = FALSE) %>%
+    .[state != "death", age := ifelse(age + 1L > 114L, 114L, age + 1L)]
   
   return(w)
 }
@@ -90,16 +90,6 @@ for (i in 1:10) {
     event_age(.) %>%
     event_disability(., trans_model)
 }
-#> Removing 324 agents in 'death' state.
-#> Removing 457 agents in 'death' state.
-#> Removing 498 agents in 'death' state.
-#> Removing 495 agents in 'death' state.
-#> Removing 557 agents in 'death' state.
-#> Removing 527 agents in 'death' state.
-#> Removing 481 agents in 'death' state.
-#> Removing 474 agents in 'death' state.
-#> Removing 444 agents in 'death' state.
-#> Removing 447 agents in 'death' state.
 ```
 
 # Visualisation

@@ -53,32 +53,32 @@ event_disability <- function(w, model) {
   
   Agt <- w$get("Agent")
   
-  eligible_agent_ids <- Agt$get_data()[age > 50, get(Agt$get_id_col())]
+  # select only agents that are older than 50 years old
+  eligible_agent_ids <- Agt$get_data()[age > 50 & state != "death",
+                                       get(Agt$get_id_col())]
   
-  TransitionDisability <- TransitionClassification$new(x = Agt, 
-                                                       model = model, 
-                                                       targeted_agents = eligible_agent_ids)
+  TransitionDisability <- 
+    TransitionClassification$new(
+      x = Agt, 
+      model = model, 
+      targeted_agents = eligible_agent_ids
+    )
   
+  # use the simulated result to update the 'state' attribute of the selected agents
   TransitionDisability$update_agents(attr = "state")
-  
-  dead_agent_ids <- Agt$get_data()[state == "death", get(Agt$get_id_col())]
-  
-  if (length(dead_agent_ids) != 0) {
-    message("Removing ", length(dead_agent_ids), " agents in 'death' state.")
-    Agt$remove(ids = dead_agent_ids)
-  }
-  
-  Agt$log(desc = "disability:state", value = xtabs(~ state, data = Agt$get_data()))
+
+  Agt$log(desc = "disability:state",
+          value = xtabs(~ state, data = Agt$get_data()))
   
   return(w)
 }
 
-
 event_age <- function(w) {
   Agt <- w$get("Agent")
   
-  # update age of agents, with max of 114.
-  Agt$get_data(copy = FALSE)[, age := ifelse(age + 1L > 114L, 114L, age + 1L)]
+  # update age of alive agents, with max of 114.
+  Agt$get_data(copy = FALSE) %>%
+    .[state != "death", age := ifelse(age + 1L > 114L, 114L, age + 1L)]
   
   return(w)
 }
