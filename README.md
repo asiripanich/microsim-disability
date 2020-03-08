@@ -3,11 +3,7 @@
 
 # microsim-disability
 
-<!-- badges: start -->
-
-<!-- badges: end -->
-
-# Import data and model
+## Import data and model
 
 ``` r
 library(dymiumCore)
@@ -34,7 +30,7 @@ a <- Agent$new(.data = population, id_col = "id")
 
 # add Agent to World
 w$add(a, name = "Agent")
-#> [11:52:15] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
+#> [11:54:25] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
 
 # convert the transition matrix to a format that dymiumCore can understand
 # see https://core.dymium.org/articles/dymium-intro.html#transition
@@ -48,7 +44,7 @@ trans_model <-
   .[, c("healthy", "mild", "severe", "death", "female") := NULL]
 ```
 
-# Create microsimulation events
+## Create microsimulation events
 
 ``` r
 event_disability <- function(w, model) {
@@ -86,7 +82,7 @@ event_age <- function(w) {
 }
 ```
 
-# Microsimulation pipeline
+## Microsimulation pipeline
 
 ``` r
 for (i in 1:10) {
@@ -94,16 +90,16 @@ for (i in 1:10) {
     event_age(.) %>%
     event_disability(., trans_model)
 }
-#> Removing 336 agents in 'death' state.
-#> Removing 447 agents in 'death' state.
-#> Removing 512 agents in 'death' state.
-#> Removing 520 agents in 'death' state.
-#> Removing 540 agents in 'death' state.
-#> Removing 513 agents in 'death' state.
-#> Removing 478 agents in 'death' state.
-#> Removing 458 agents in 'death' state.
+#> Removing 324 agents in 'death' state.
+#> Removing 457 agents in 'death' state.
 #> Removing 498 agents in 'death' state.
-#> Removing 466 agents in 'death' state.
+#> Removing 495 agents in 'death' state.
+#> Removing 557 agents in 'death' state.
+#> Removing 527 agents in 'death' state.
+#> Removing 481 agents in 'death' state.
+#> Removing 474 agents in 'death' state.
+#> Removing 444 agents in 'death' state.
+#> Removing 447 agents in 'death' state.
 ```
 
 # Visualisation

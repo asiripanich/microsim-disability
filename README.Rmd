@@ -13,10 +13,8 @@ knitr::opts_chunk$set(
 
 # microsim-disability
 
-<!-- badges: start -->
-<!-- badges: end -->
 
-# Import data and model
+## Import data and model
 
 ```{r}
 library(dymiumCore)
@@ -48,7 +46,7 @@ trans_model <-
   .[, c("healthy", "mild", "severe", "death", "female") := NULL]
 ```
 
-# Create microsimulation events
+## Create microsimulation events
 
 ```{r}
 event_disability <- function(w, model) {
@@ -87,7 +85,7 @@ event_age <- function(w) {
 ```
 
 
-# Microsimulation pipeline
+## Microsimulation pipeline
 
 ```{r}
 for (i in 1:10) {
