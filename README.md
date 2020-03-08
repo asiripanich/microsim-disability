@@ -17,7 +17,7 @@ library(dymiumCore)
 #> ● dymium.simulation_scale: 1
 library(data.table)
 
-# generate a population
+# load a population
 population <- 
   fread("data/base.csv") %>%
   .[, sex := ifelse(female == 1, "female", "male")] %>%
@@ -30,9 +30,9 @@ a <- Agent$new(.data = population, id_col = "id")
 
 # add Agent to World
 w$add(a, name = "Agent")
-#> [12:03:16] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
+#> [12:09:53] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
 
-# convert the transition matrix to a format that dymiumCore can understand
+# convert the transition matrix model to a format that dymiumCore can understand
 # see https://core.dymium.org/articles/dymium-intro.html#transition
 trans_model <-
   fread("data/tprob.csv") %>%
