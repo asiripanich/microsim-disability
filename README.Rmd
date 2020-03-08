@@ -22,20 +22,16 @@ knitr::opts_chunk$set(
 library(dymiumCore)
 library(data.table)
 
-n_agents <- 1000L
-
 # generate a population
 population <- 
-  data.table(
-    pid = 1:n_agents,
-    age = sample(0:100, n_agents, replace = T),
-    sex = sample(c("female", "male"), n_agents, replace = T),
-    state = sample(c("healthy", "mild", "severe"), n_agents, replace = T)
-  ) 
+  fread("data/base.csv") %>%
+  .[, sex := ifelse(female == 1, "female", "male")] %>%
+  .[, c("female") := NULL] %>%
+  .[, state := factor(x = state, levels = 1:3, labels = c("healthy", "mild", "severe"))]
 
 # create World
 w <- World$new()
-a <- Agent$new(.data = population, id_col = "pid")
+a <- Agent$new(.data = population, id_col = "id")
 
 # add Agent to World
 w$add(a, name = "Agent")

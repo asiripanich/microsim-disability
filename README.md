@@ -21,24 +21,20 @@ library(dymiumCore)
 #> ● dymium.simulation_scale: 1
 library(data.table)
 
-n_agents <- 1000L
-
 # generate a population
 population <- 
-  data.table(
-    pid = 1:n_agents,
-    age = sample(0:100, n_agents, replace = T),
-    sex = sample(c("female", "male"), n_agents, replace = T),
-    state = sample(c("healthy", "mild", "severe"), n_agents, replace = T)
-  ) 
+  fread("data/base.csv") %>%
+  .[, sex := ifelse(female == 1, "female", "male")] %>%
+  .[, c("female") := NULL] %>%
+  .[, state := factor(x = state, levels = 1:3, labels = c("healthy", "mild", "severe"))]
 
 # create World
 w <- World$new()
-a <- Agent$new(.data = population, id_col = "pid")
+a <- Agent$new(.data = population, id_col = "id")
 
 # add Agent to World
 w$add(a, name = "Agent")
-#> [11:45:24] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
+#> [11:52:15] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
 
 # convert the transition matrix to a format that dymiumCore can understand
 # see https://core.dymium.org/articles/dymium-intro.html#transition
@@ -98,16 +94,16 @@ for (i in 1:10) {
     event_age(.) %>%
     event_disability(., trans_model)
 }
-#> Removing 90 agents in 'death' state.
-#> Removing 57 agents in 'death' state.
-#> Removing 52 agents in 'death' state.
-#> Removing 46 agents in 'death' state.
-#> Removing 30 agents in 'death' state.
-#> Removing 36 agents in 'death' state.
-#> Removing 33 agents in 'death' state.
-#> Removing 21 agents in 'death' state.
-#> Removing 27 agents in 'death' state.
-#> Removing 13 agents in 'death' state.
+#> Removing 336 agents in 'death' state.
+#> Removing 447 agents in 'death' state.
+#> Removing 512 agents in 'death' state.
+#> Removing 520 agents in 'death' state.
+#> Removing 540 agents in 'death' state.
+#> Removing 513 agents in 'death' state.
+#> Removing 478 agents in 'death' state.
+#> Removing 458 agents in 'death' state.
+#> Removing 498 agents in 'death' state.
+#> Removing 466 agents in 'death' state.
 ```
 
 # Visualisation
