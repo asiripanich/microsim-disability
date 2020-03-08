@@ -23,6 +23,7 @@ library(data.table)
 
 n_agents <- 1000L
 
+# generate a population
 population <- 
   data.table(
     pid = 1:n_agents,
@@ -31,12 +32,16 @@ population <-
     state = sample(c("healthy", "mild", "severe"), n_agents, replace = T)
   ) 
 
+# create World
 w <- World$new()
 a <- Agent$new(.data = population, id_col = "pid")
 
+# add Agent to World
 w$add(a, name = "Agent")
-#> [11:42:12] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
+#> [11:45:24] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
 
+# convert the transition matrix to a format that dymiumCore can understand
+# see https://core.dymium.org/articles/dymium-intro.html#transition
 trans_model <-
   fread("data/tprob.csv") %>%
   .[, `:=`(probs = .(c(healthy, mild, severe, death)),
@@ -59,8 +64,6 @@ event_disability <- function(w, model) {
   TransitionDisability <- TransitionClassification$new(x = Agt, 
                                                        model = model, 
                                                        targeted_agents = eligible_agent_ids)
-  
-  print(TransitionDisability)
   
   TransitionDisability$update_agents(attr = "state")
   
@@ -95,26 +98,16 @@ for (i in 1:10) {
     event_age(.) %>%
     event_disability(., trans_model)
 }
-#> There are 473 Agent agents with 4 unique responses of type character {death: 68 | healthy: 112 | mild: 136 | severe: 157}
-#> Removing 68 agents in 'death' state.
-#> There are 422 Agent agents with 4 unique responses of type character {death: 60 | healthy: 106 | mild: 91 | severe: 165}
-#> Removing 60 agents in 'death' state.
-#> There are 365 Agent agents with 4 unique responses of type character {death: 25 | healthy: 87 | mild: 99 | severe: 154}
-#> Removing 25 agents in 'death' state.
-#> There are 354 Agent agents with 4 unique responses of type character {death: 37 | healthy: 89 | mild: 88 | severe: 140}
-#> Removing 37 agents in 'death' state.
-#> There are 326 Agent agents with 4 unique responses of type character {death: 46 | healthy: 86 | mild: 65 | severe: 129}
+#> Removing 90 agents in 'death' state.
+#> Removing 57 agents in 'death' state.
+#> Removing 52 agents in 'death' state.
 #> Removing 46 agents in 'death' state.
-#> There are 288 Agent agents with 4 unique responses of type character {death: 26 | healthy: 77 | mild: 66 | severe: 119}
-#> Removing 26 agents in 'death' state.
-#> There are 271 Agent agents with 4 unique responses of type character {death: 30 | healthy: 81 | mild: 55 | severe: 105}
 #> Removing 30 agents in 'death' state.
-#> There are 253 Agent agents with 4 unique responses of type character {death: 28 | healthy: 76 | mild: 64 | severe: 85}
-#> Removing 28 agents in 'death' state.
-#> There are 232 Agent agents with 4 unique responses of type character {death: 14 | healthy: 79 | mild: 51 | severe: 88}
-#> Removing 14 agents in 'death' state.
-#> There are 228 Agent agents with 4 unique responses of type character {death: 22 | healthy: 83 | mild: 42 | severe: 81}
-#> Removing 22 agents in 'death' state.
+#> Removing 36 agents in 'death' state.
+#> Removing 33 agents in 'death' state.
+#> Removing 21 agents in 'death' state.
+#> Removing 27 agents in 'death' state.
+#> Removing 13 agents in 'death' state.
 ```
 
 # Visualisation

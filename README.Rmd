@@ -24,6 +24,7 @@ library(data.table)
 
 n_agents <- 1000L
 
+# generate a population
 population <- 
   data.table(
     pid = 1:n_agents,
@@ -32,11 +33,15 @@ population <-
     state = sample(c("healthy", "mild", "severe"), n_agents, replace = T)
   ) 
 
+# create World
 w <- World$new()
 a <- Agent$new(.data = population, id_col = "pid")
 
+# add Agent to World
 w$add(a, name = "Agent")
 
+# convert the transition matrix to a format that dymiumCore can understand
+# see https://core.dymium.org/articles/dymium-intro.html#transition
 trans_model <-
   fread("data/tprob.csv") %>%
   .[, `:=`(probs = .(c(healthy, mild, severe, death)),
@@ -59,8 +64,6 @@ event_disability <- function(w, model) {
   TransitionDisability <- TransitionClassification$new(x = Agt, 
                                                        model = model, 
                                                        targeted_agents = eligible_agent_ids)
-  
-  print(TransitionDisability)
   
   TransitionDisability$update_agents(attr = "state")
   
