@@ -92,7 +92,7 @@ event_age <- function(w) {
 
 ```{r}
 for (i in 1:10) {
-  w %>%
+  w$start_iter(time_step = i, unit = "year") %>%
     event_age(.) %>%
     event_disability(., trans_model)
 }
@@ -101,6 +101,22 @@ for (i in 1:10) {
 # Visualisation
 
 ```{r}
-get_log(w)
+library(purrr) # for working with lists
+library(ggplot2)
+
+simlog <- get_log(w)
+
+statelog <- 
+  purrr::map2_dfr(simlog$time, simlog$value, ~ {
+    .y %>% 
+      as.data.table() %>%
+      .[, time := .x]
+  })
+
+ggplot(data = statelog, aes(x = time, y = N, color = state)) +
+  geom_line() +
+  scale_x_continuous(breaks = scales::pretty_breaks()) +
+  labs(title = "Disability status")
 ```
+
 

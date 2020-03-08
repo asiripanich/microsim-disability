@@ -35,7 +35,7 @@ w <- World$new()
 a <- Agent$new(.data = population, id_col = "pid")
 
 w$add(a, name = "Agent")
-#> [11:33:11] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
+#> [11:42:12] WARN  dymiumCore w$add: The given `name` will be ignored since the object in x is of a Dymium class object. The classname of the object will be used as its name.
 
 trans_model <-
   fread("data/tprob.csv") %>%
@@ -91,34 +91,56 @@ event_age <- function(w) {
 
 ``` r
 for (i in 1:10) {
-  w %>%
+  w$start_iter(time_step = i, unit = "year") %>%
     event_age(.) %>%
     event_disability(., trans_model)
 }
-#> There are 505 Agent agents with 4 unique responses of type character {death: 79 | healthy: 115 | mild: 155 | severe: 156}
-#> Removing 79 agents in 'death' state.
-#> There are 434 Agent agents with 4 unique responses of type character {death: 66 | healthy: 111 | mild: 115 | severe: 142}
-#> Removing 66 agents in 'death' state.
-#> There are 378 Agent agents with 4 unique responses of type character {death: 44 | healthy: 106 | mild: 100 | severe: 128}
-#> Removing 44 agents in 'death' state.
-#> There are 344 Agent agents with 4 unique responses of type character {death: 47 | healthy: 97 | mild: 78 | severe: 122}
-#> Removing 47 agents in 'death' state.
-#> There are 309 Agent agents with 4 unique responses of type character {death: 34 | healthy: 93 | mild: 67 | severe: 115}
-#> Removing 34 agents in 'death' state.
-#> There are 285 Agent agents with 4 unique responses of type character {death: 44 | healthy: 82 | mild: 67 | severe: 92}
-#> Removing 44 agents in 'death' state.
-#> There are 250 Agent agents with 4 unique responses of type character {death: 25 | healthy: 80 | mild: 57 | severe: 88}
+#> There are 473 Agent agents with 4 unique responses of type character {death: 68 | healthy: 112 | mild: 136 | severe: 157}
+#> Removing 68 agents in 'death' state.
+#> There are 422 Agent agents with 4 unique responses of type character {death: 60 | healthy: 106 | mild: 91 | severe: 165}
+#> Removing 60 agents in 'death' state.
+#> There are 365 Agent agents with 4 unique responses of type character {death: 25 | healthy: 87 | mild: 99 | severe: 154}
 #> Removing 25 agents in 'death' state.
-#> There are 234 Agent agents with 4 unique responses of type character {death: 20 | healthy: 82 | mild: 53 | severe: 79}
-#> Removing 20 agents in 'death' state.
-#> There are 224 Agent agents with 4 unique responses of type character {death: 20 | healthy: 84 | mild: 52 | severe: 68}
-#> Removing 20 agents in 'death' state.
-#> There are 213 Agent agents with 4 unique responses of type character {death: 15 | healthy: 79 | mild: 48 | severe: 71}
-#> Removing 15 agents in 'death' state.
+#> There are 354 Agent agents with 4 unique responses of type character {death: 37 | healthy: 89 | mild: 88 | severe: 140}
+#> Removing 37 agents in 'death' state.
+#> There are 326 Agent agents with 4 unique responses of type character {death: 46 | healthy: 86 | mild: 65 | severe: 129}
+#> Removing 46 agents in 'death' state.
+#> There are 288 Agent agents with 4 unique responses of type character {death: 26 | healthy: 77 | mild: 66 | severe: 119}
+#> Removing 26 agents in 'death' state.
+#> There are 271 Agent agents with 4 unique responses of type character {death: 30 | healthy: 81 | mild: 55 | severe: 105}
+#> Removing 30 agents in 'death' state.
+#> There are 253 Agent agents with 4 unique responses of type character {death: 28 | healthy: 76 | mild: 64 | severe: 85}
+#> Removing 28 agents in 'death' state.
+#> There are 232 Agent agents with 4 unique responses of type character {death: 14 | healthy: 79 | mild: 51 | severe: 88}
+#> Removing 14 agents in 'death' state.
+#> There are 228 Agent agents with 4 unique responses of type character {death: 22 | healthy: 83 | mild: 42 | severe: 81}
+#> Removing 22 agents in 'death' state.
 ```
 
 # Visualisation
 
 ``` r
-get_log(w)
+library(purrr) # for working with lists
+#> 
+#> Attaching package: 'purrr'
+#> The following object is masked from 'package:data.table':
+#> 
+#>     transpose
+library(ggplot2)
+
+simlog <- get_log(w)
+
+statelog <- 
+  purrr::map2_dfr(simlog$time, simlog$value, ~ {
+    .y %>% 
+      as.data.table() %>%
+      .[, time := .x]
+  })
+
+ggplot(data = statelog, aes(x = time, y = N, color = state)) +
+  geom_line() +
+  scale_x_continuous(breaks = scales::pretty_breaks()) +
+  labs(title = "Disability status")
 ```
+
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
