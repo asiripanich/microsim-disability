@@ -10,6 +10,18 @@ the probability matrix) form a multinomial distribution. One can thus
 simulate from a Markov Chain by simulating from a multinomial
 distribution.
 
+<div class="figure">
+
+<img src="images/state-diagram.png" alt="State diagram" width="975" />
+
+<p class="caption">
+
+State diagram
+
+</p>
+
+</div>
+
 ## Setup the environment
 
 We use the (dymiumCore)\[<https://github.com/dymium-org/dymiumCore>\]

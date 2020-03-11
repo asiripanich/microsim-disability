@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 This microsimulation model simulates disability progression using a Markov Chain model. One can simulate from a Markov chain by noting that the collection of moves from any given state (the corresponding row in the probability matrix) form a multinomial distribution. One can thus simulate from a Markov Chain by simulating from a multinomial distribution.
 
-```{r, fig.cap="State diagram", include=FALSE}
+```{r, fig.cap="State diagram", echo=FALSE}
 knitr::include_graphics("images/state-diagram.png")
 ```
 
