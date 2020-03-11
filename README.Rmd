@@ -13,13 +13,25 @@ knitr::opts_chunk$set(
 
 # microsim-disability
 
+This microsimulation model simulates disability progression using a Markov Chain model. One can simulate from a Markov chain by noting that the collection of moves from any given state (the corresponding row in the probability matrix) form a multinomial distribution. One can thus simulate from a Markov Chain by simulating from a multinomial distribution.
+
+```{r, fig.cap="State diagram", include=FALSE}
+knitr::include_graphics("images/state-diagram.png")
+```
+
+## Setup the environment
+
+We use the (dymiumCore)[https://github.com/dymium-org/dymiumCore] package which provides the basic building blocks for microsimulation in R to develop our microsimulation model below. 
+
+```{r setup}
+library(dymiumCore)
+library(data.table)
+set.seed(1)
+```
 
 ## Import data and model
 
 ```{r}
-library(dymiumCore)
-library(data.table)
-
 # load a population
 population <- 
   fread("data/base.csv") %>%

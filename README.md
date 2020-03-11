@@ -3,20 +3,32 @@
 
 # microsim-disability
 
-## Import data and model
+This microsimulation model simulates disability progression using a
+Markov Chain model. One can simulate from a Markov chain by noting that
+the collection of moves from any given state (the corresponding row in
+the probability matrix) form a multinomial distribution. One can thus
+simulate from a Markov Chain by simulating from a multinomial
+distribution.
+
+## Setup the environment
+
+We use the (dymiumCore)\[<https://github.com/dymium-org/dymiumCore>\]
+package which provides the basic building blocks for microsimulation in
+R to develop our microsimulation model below.
 
 ``` r
 library(dymiumCore)
-#> ── * dymium's options * ────────────────────────────────────────────────────────
-#> ● dymium.input_dir:
-#>   /var/folders/0d/9srpj_750lxbkfs2_8nwkcpw0000gn/T//RtmpTMrdTm/scenario/inputs
-#> ● dymium.output_dir:
-#>   /var/folders/0d/9srpj_750lxbkfs2_8nwkcpw0000gn/T//RtmpTMrdTm/scenario/outputs
-#> ● dymium.scenario_dir:
-#>   /var/folders/0d/9srpj_750lxbkfs2_8nwkcpw0000gn/T//RtmpTMrdTm/scenario
-#> ● dymium.simulation_scale: 1
+#> ── * dymium's options * ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ● dymiun.scenario_dir: /var/folders/0d/9srpj_750lxbkfs2_8nwkcpw0000gn/T//Rtmp2iIk31/scenario
+#> ● dymiun.input_dir: /var/folders/0d/9srpj_750lxbkfs2_8nwkcpw0000gn/T//Rtmp2iIk31/scenario/inputs
+#> ● dymiun.output_dir: /var/folders/0d/9srpj_750lxbkfs2_8nwkcpw0000gn/T//Rtmp2iIk31/scenario/outputs
 library(data.table)
+set.seed(1)
+```
 
+## Import data and model
+
+``` r
 # load a population
 population <- 
   fread("data/base.csv") %>%
@@ -118,4 +130,4 @@ ggplot(data = statelog, aes(x = time, y = N, color = state)) +
   labs(title = "Disability status")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
