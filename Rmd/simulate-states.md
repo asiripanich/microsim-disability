@@ -42,7 +42,7 @@ my_prediction <-
   )
 ```
 
-Each row represent the transition probabilities of each agent. This
+Each row represents the transition probabilities of each agent. This
 implies that there are 100 agents.
 
 So to simulate which state they are transitioning into we can use
