@@ -1,20 +1,12 @@
----
-title: "State simulator"
-output: github_document
----
+State simulator
+================
 
-```{r setup, include=FALSE}
-library(data.table)
-library(dymiumCore)
-library(purrr)
-library(checkmate)
-library(ggplot2)
-knitr::opts_chunk$set(echo = TRUE)
-```
+This is the `monte_carlo_sim` function from dymiumCore package. It is
+meant to be used for simulating which of the states in `prediction`, a
+data.table object, agents are transitioning into, you may ignore
+`target` for now.
 
-This is the `monte_carlo_sim` function from dymiumCore package. It is meant to be used for simulating which of the states in `prediction`, a data.table object, agents are transitioning into, you may ignore `target` for now.
-
-```{r}
+``` r
 monte_carlo_sim <- function(prediction, target) {
   checkmate::assert_data_frame(
     prediction,
@@ -42,7 +34,7 @@ monte_carlo_sim <- function(prediction, target) {
 
 Assuming that our `prediction` looks like the following:
 
-```{r}
+``` r
 my_prediction <-
   data.table(
     alive = rep(0.9, 100),
@@ -50,23 +42,27 @@ my_prediction <-
   )
 ```
 
-Each row represent the transition probabilities of each agent. This implies that there are 100 agents.
+Each row represent the transition probabilities of each agent. This
+implies that there are 100 agents.
 
-So to simulate which state they are transitioning into we can use `monte_carlo_sim`.
+So to simulate which state they are transitioning into we can use
+`monte_carlo_sim`.
 
-```{r}
+``` r
 sim_result <- monte_carlo_sim(my_prediction, target = NULL)
 ```
 
-The function returns a character vector with length of 100 (it should come as no surprise since we have 100 agents). Each element belongs to the agent of that corresponding index.
+The function returns a character vector with length of 100 (it should
+come as no surprise since we have 100 agents). Each element belongs to
+the agent of that corresponding index.
 
+Let’s visualise the result.
 
-Let's visualise the result.
-
-```{r}
+``` r
 ggplot(data.frame(response = sim_result), aes(response)) +
   geom_bar() +
   geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
   ylim(0, 110)
 ```
 
+![](simulate-states_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
