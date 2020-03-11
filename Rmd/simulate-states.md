@@ -1,10 +1,12 @@
 State simulator
 ================
 
-This is the `monte_carlo_sim` function from dymiumCore package. It is
-meant to be used for simulating which of the states in `prediction`, a
-data.table object, agents are transitioning into, you may ignore
-`target` for now.
+This is the `monte_carlo_sim` function from dymiumCore package. It is an
+unexported function, meaning it won’t appear in the namespace of
+dymiumCore once the package is loaded, but it can be assessed using
+triple colons `dymiumCore:::monte_carlo_sim`. It is meant to be used for
+simulating which of the states in `prediction`, a data.table object,
+agents are transitioning into, you may ignore `target` for now.
 
 ``` r
 monte_carlo_sim <- function(prediction, target) {
@@ -32,7 +34,7 @@ monte_carlo_sim <- function(prediction, target) {
 }
 ```
 
-Assuming that our `prediction` looks like the following:
+Assuming that our input in `prediction` looks like the following:
 
 ``` r
 my_prediction <-
